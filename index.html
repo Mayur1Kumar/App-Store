@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;     /* Prevents text selection */
+      caret-color: transparent;  /* Hides the blinking text cursor */
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #f4f6f8;
+    }
+
+    header {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: bold;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    footer {
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    main {
+      position: absolute;
+      top: 70px;
+      bottom: 100px;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 1rem;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(4, 1fr);
+      max-height: calc(100vh - 170px);
+    }
+
+    .card {
+      background: linear-gradient(145deg, #ffffff, #e6e6e6);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      height: calc((100vh - 170px - 2rem) / 2);
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      border-radius: 20%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f0f0;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .app-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+      text-align: center;
+    }
+
+    .description {
+      margin-top: 1rem;
+      text-align: center;
+      color: #444;
+      font-size: 0.9rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-button {
+      position: absolute;
+      right: 2rem;
+      top: 1rem;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .modal-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      border-radius: 20%;
+      overflow: hidden;
+    }
+
+    .modal-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20%;
+    }
+
+    .modal-app-name {
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .modal-description {
+      color: #444;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .button {
+      background-color: #00c6ff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .button:hover {
+      background-color: #0072ff;
+    }
+
+@media (orientation: portrait) {
+  main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card {
+    height: calc((100vh - 170px - 3rem) / 4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    margin: auto;
+    top: 50% !important;
+    transform: translateY(-50%);
+    max-width: 90%;
+  }
+
+  .card .description {
+    display: none;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <header>App Store</header>
+
+  <main>
+    <!-- Example Cards -->
+    <div
+      class="card"
+      onclick="openModal(this)"
+      data-app-name="Brick Breaker"
+      data-description="Brick Breaker is a classic arcade game where players use a paddle to bounce a ball and break all the bricks on the screen."
+      data-logo-src="/Images/Brick.png" alt="Brick"
+      data-download-link="https://kodular.app/OLT-FXI"
+      data-view-link="https://mayur1kumar.github.io/Game/"
+    >
+      <div class="logo">
+        <img src="/Images/Brick.png" alt="Brick" />
+      </div>
+      <div class="app-name">Brick Breaker</div>
+      <div class="description">
+        Brick Breaker is a classic arcade game where players use a paddle to bounce a ball and break all the bricks on the screen.
+      </div>
+    </div>
+
+  <footer>© 2025 App Store</footer>
+
+  <!-- Modal -->
+  <div id="appModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <div class="modal-logo"></div>
+      <div class="modal-app-name"></div>
+      <div class="modal-description"></div>
+      <div class="modal-buttons">
+        <button class="button" id="downloadBtn">Download</button>
+        <button class="button" id="viewBtn">View</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("appModal");
+    const modalAppName = modal.querySelector(".modal-app-name");
+    const modalDescription = modal.querySelector(".modal-description");
+    const modalLogo = modal.querySelector(".modal-logo");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const viewBtn = document.getElementById("viewBtn");
+
+    function openModal(card) {
+      const appName = card.dataset.appName;
+      const description = card.dataset.description;
+      const logoSrc = card.dataset.logoSrc;
+      const downloadLink = card.dataset.downloadLink;
+      const viewLink = card.dataset.viewLink;
+
+      modalAppName.textContent = appName;
+      modalDescription.textContent = description;
+      modalLogo.innerHTML = `<img src="${logoSrc}" alt="${appName} Logo" />`;
+
+      downloadBtn.onclick = () => window.open(downloadLink, "_blank");
+      viewBtn.onclick = () => window.open(viewLink, "_blank");
+
+      modal.style.display = "block";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>
