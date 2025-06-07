@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>App Store</title>
   <style>
     * {
@@ -394,6 +394,43 @@
           document.body.style.overflow = "auto";
         }, 600);
       }, 3000);
+    });
+
+    // Prevent pull-to-refresh on mobile
+    let lastTouchY = 0;
+    let maybePreventPullToRefresh = false;
+
+    document.addEventListener('touchstart', (e) => {
+      if (document.scrollingElement.scrollTop === 0) {
+        lastTouchY = e.touches[0].clientY;
+        maybePreventPullToRefresh = true;
+      } else {
+        maybePreventPullToRefresh = false;
+      }
+    }, {passive: true});
+
+    document.addEventListener('touchmove', (e) => {
+      let touchY = e.touches[0].clientY;
+      let touchYDelta = touchY - lastTouchY;
+      lastTouchY = touchY;
+
+      if (maybePreventPullToRefresh && touchYDelta > 0) {
+        e.preventDefault();
+      }
+    }, {passive: false});
+
+    // Prevent zoom with Ctrl + mouse wheel
+    window.addEventListener('wheel', function(e) {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Prevent zoom with Ctrl + keyboard (+, -, =)
+    window.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=')) {
+        e.preventDefault();
+      }
     });
   </script>
 </body>
