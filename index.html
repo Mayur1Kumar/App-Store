@@ -10,8 +10,8 @@
       margin: 0;
       padding: 0;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      user-select: none;     /* Prevents text selection */
-      caret-color: transparent;  /* Hides the blinking text cursor */
+      user-select: none;
+      caret-color: transparent;
     }
 
     html, body {
@@ -195,35 +195,124 @@
       background-color: #0072ff;
     }
 
-@media (orientation: portrait) {
-  main {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    @media (orientation: portrait) {
+      main {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
-  .card {
-    height: calc((100vh - 170px - 3rem) / 4);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+      .card {
+        height: calc((100vh - 170px - 3rem) / 4);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
-  .modal-content {
-    margin: auto;
-    top: 50% !important;
-    transform: translateY(-50%);
-    max-width: 90%;
-  }
+      .modal-content {
+        margin: auto;
+        top: 50% !important;
+        transform: translateY(-50%);
+        max-width: 90%;
+      }
 
-  .card .description {
-    display: none;
-  }
-}
+      .card .description {
+        display: none;
+      }
+    }
 
+    /* Loading Screen Styles (App Store theme) */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.6s ease;
+      color: white;
+      user-select: none;
+    }
 
+    #loader h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .loading-bar-container {
+      width: 80%;
+      max-width: 300px;
+      height: 8px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      box-shadow: inset 0 0 5px rgba(255,255,255,0.4);
+    }
+
+    .loading-bar {
+      height: 100%;
+      width: 0%;
+      background: white;
+      animation: loading 3s linear forwards;
+      border-radius: 10px 0 0 10px;
+      box-shadow: 0 0 8px white;
+    }
+
+    @keyframes loading {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    #loader p {
+      font-size: 1rem;
+      font-style: italic;
+      text-shadow: 0 0 5px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+
+    #loader-footer {
+      position: absolute;
+      bottom: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      font-weight: 500;
+      font-style: normal;
+      text-shadow: 0 0 3px rgba(0,0,0,0.15);
+    }
+
+    @media screen and (max-width: 480px) {
+      #loader h1 {
+        font-size: 1.5rem;
+      }
+
+      #loader p {
+        font-size: 0.85rem;
+      }
+
+      #loader-footer {
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Loading Screen -->
+  <div id="loader">
+    <h1>App Store</h1>
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
+    <p>Loading apps, please wait...</p>
+    <div id="loader-footer">Designed and Developed by Mayur Kumar</div>
+  </div>
+
   <header>App Store</header>
 
   <main>
@@ -231,20 +320,20 @@
     <div
       class="card"
       onclick="openModal(this)"
-      data-app-name="Brick Breaker"
-      data-description="Brick Breaker is a classic arcade game where players use a paddle to bounce a ball and break all the bricks on the screen."
-      data-logo-src="Brick.png" alt="Brick"
-      data-download-link="https://kodular.app/OLT-FXI"
-      data-view-link="https://mayur1kumar.github.io/Game/"
+      data-app-name="Calculator"
+      data-description="An advanced, responsive calculator designed for seamless use across all devices with enhanced features and real-time calculations."
+      data-logo-src="calc.jpg"
+      data-view-link="https://mayur1kumar.github.io/calculator/"
     >
       <div class="logo">
-        <img src="Brick.png" alt="Brick" />
+        <img src="calc.jpg" alt="Brick" />
       </div>
-      <div class="app-name">Brick Breaker</div>
+      <div class="app-name">Calculator</div>
       <div class="description">
-        Brick Breaker is a classic arcade game where players use a paddle to bounce a ball and break all the bricks on the screen.
+        An advanced, responsive calculator designed for seamless use across all devices with enhanced features and real-time calculations.
       </div>
     </div>
+  </main>
 
   <footer>© 2025 App Store</footer>
 
@@ -256,7 +345,6 @@
       <div class="modal-app-name"></div>
       <div class="modal-description"></div>
       <div class="modal-buttons">
-        <button class="button" id="downloadBtn">Download</button>
         <button class="button" id="viewBtn">View</button>
       </div>
     </div>
@@ -267,22 +355,21 @@
     const modalAppName = modal.querySelector(".modal-app-name");
     const modalDescription = modal.querySelector(".modal-description");
     const modalLogo = modal.querySelector(".modal-logo");
-    const downloadBtn = document.getElementById("downloadBtn");
     const viewBtn = document.getElementById("viewBtn");
 
     function openModal(card) {
       const appName = card.dataset.appName;
       const description = card.dataset.description;
       const logoSrc = card.dataset.logoSrc;
-      const downloadLink = card.dataset.downloadLink;
       const viewLink = card.dataset.viewLink;
 
       modalAppName.textContent = appName;
       modalDescription.textContent = description;
-      modalLogo.innerHTML = `<img src="${logoSrc}" alt="${appName} Logo" />`;
+      modalLogo.innerHTML = `<img src="${logoSrc}" alt="${appName}" />`;
 
-      downloadBtn.onclick = () => window.open(downloadLink, "_blank");
-      viewBtn.onclick = () => window.open(viewLink, "_blank");
+      viewBtn.onclick = () => {
+        window.open(viewLink, "_blank");
+      };
 
       modal.style.display = "block";
     }
@@ -291,11 +378,23 @@
       modal.style.display = "none";
     }
 
-    window.onclick = function (event) {
-      if (event.target === modal) {
+    window.onclick = function(event) {
+      if (event.target == modal) {
         closeModal();
       }
     };
+
+    // Hide loader after 3 seconds
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const loader = document.getElementById("loader");
+        loader.style.opacity = 0;
+        setTimeout(() => {
+          loader.style.display = "none";
+          document.body.style.overflow = "auto";
+        }, 600);
+      }, 3000);
+    });
   </script>
 </body>
 </html>
